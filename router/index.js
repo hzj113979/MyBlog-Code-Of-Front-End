@@ -15,7 +15,6 @@ export default new Router({
       redirect: '/Login',//配置型跳转
       hidden: true
     },
-
     {
       path: '/loginblank',
       name: 'loginblank',
@@ -23,10 +22,16 @@ export default new Router({
       component: (resolve) => require(['@/assets/Blank/LoginBlank'], resolve)
     },
     {
-      path: 'register',
+      path: '/register',
       name: 'register',
       hidden: true,
       component: (resolve) => require(['@/components/Register'], resolve)
+    },
+    {
+      path: '/md',
+      name: 'md',
+      hidden: true,
+      component: (resolve) => require(['@/components/MarkDown'], resolve),
     },
     {
       path: '/home',
@@ -52,14 +57,15 @@ export default new Router({
       ]
     },
     {
-      path: '/blogDetail',
+      path: '/blogPage',
       name: '博客详情',
-      component: (resolve) => require(['@/components/BlogDetail'], resolve),
+      component: (resolve) => require(['@/components/BlogPage'], resolve),
       hidden: true,
       meta: {
         keepAlive: false
       }
     },
+
     {
       path: '/home',
       component: (resolve) => require(['@/components/Home'], resolve),
@@ -138,6 +144,7 @@ export default new Router({
         },
       ]
     },
+
   ],
   routes1: [
 

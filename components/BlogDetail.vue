@@ -28,8 +28,10 @@
         </div>
       </el-col>
       <el-col>
-        <div style="text-align: left" v-html="article.htmlContent">
-        </div>
+<!--        <div style="text-align: left" v-html="article.htmlContent">-->
+<!--        </div>-->
+        <v-md-preview :text="article.mdContent"></v-md-preview>
+<!--        <v-md-editor :value="article.mdContent" mode="preview"></v-md-editor>-->
       </el-col>
     </el-row>-
   </div>
@@ -42,7 +44,7 @@ export default {
     return {
       article: {},
       loading: false,
-      activeName: ''
+      // activeName: ''
     }
   },
   methods: {
@@ -51,19 +53,18 @@ export default {
     }
   },
   mounted: function () {
-    var _this = this;
     var aid = this.$route.query.aid;
-    this.activeName = this.$route.query.an
+    // this.activeName = this.$route.query.an
     this.loading = true;
     getRequest("/article/getArticleById/" + aid).then(resp => {
       if (resp.status === 200) {
         console.log(resp)
-        _this.article = resp.data;
+        this.article = resp.data;
       }
-      _this.loading = false;
+      this.loading = false;
     }, resp => {
-      _this.loading = false;
-      _this.$message({type: 'error', message: '页面加载失败!'});
+      this.loading = false;
+      this.$message({type: 'error', message: '页面加载失败!'});
     });
   },
 }
@@ -73,7 +74,8 @@ export default {
   background-color: rgba(0, 0, 0, 0);
 }
 .body{
-  background-image: linear-gradient(to bottom right, #f9a7a7, #66b1ff);
+  /*background-image: linear-gradient(to bottom right, #f9a7a7, #66b1ff);*/
   height: 100%;
 }
+
 </style>

@@ -16,7 +16,7 @@
         <li v-for="item in articleList" :key="item.id" class="item">
           <div class="content" @click="itemClick(item.id)">
             <h4 class="title">{{ item.title }}</h4>
-            <!-- <p class="description">{{ item.description }}</p> -->
+             <p class="description">{{ item.summary }}</p>
             <div class="meta">
               <span>{{ item.msg }}</span>
               <span>{{ item.nickname }}</span>
@@ -88,6 +88,7 @@
 <script>
 import { postRequest } from '../utils/api'
 import { getRequest } from '../utils/api'
+import BlogPage from "./BlogPage.vue";
 export default {
   data() {
     return {
@@ -117,7 +118,9 @@ export default {
     },
     // 文章详细
     itemClick(id) {
-      this.$router.push({ path: '/blogDetail', query: { aid: id } })
+      // this.$router.push({ path: '/blogDetail', query: { aid: id } })
+      this.$router.push({ path: '/blogPage', query: { aid: id } })
+
     },
     // 收藏操作
     addCollect(aid) {

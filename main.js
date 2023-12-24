@@ -6,12 +6,11 @@ import router from './router'
 import axios from 'axios'
 import 'font-awesome/css/font-awesome.min.css'
 import './utils/filter_utils.js'
-// import './assets/GlobalCSS/global.css'
+// 引入v-md-editor 组件及样式
+import './assets/md/code.js';
 
-// axios.defaults.withCredentials = true;
-Vue.prototype.$http = axios
 Vue.use(ElementUI)
-
+Vue.prototype.$http = axios
 Vue.config.productionTip = false
 window.bus = new Vue();
 new Vue({

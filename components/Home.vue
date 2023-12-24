@@ -45,12 +45,6 @@ export default {
     }
   },
   components: { SideBar },
-  watch: {
-    $route(to, from) {
-      console.log("跳转")
-      this.$route().go //监测到路由发生跳转时刷新一次页面
-    },
-  },
   methods: {
     handleCommand(command) {
       var _this = this;

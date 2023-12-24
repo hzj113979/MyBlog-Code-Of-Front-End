@@ -46,6 +46,8 @@ export default {
 <style>
 .el-main{
   padding: 0px;
+  height: 100%;
+  background-image: linear-gradient(to bottom right, #f9a7a7, #66b1ff);
 }
 .el-container{
   background-color: rgba(235, 235, 235, 0.08);
@@ -71,7 +73,6 @@ export default {
   margin-top: 0;
 
 }
-
 .el-footer {
   background-color: #B3C0D1;
   color: #333;
