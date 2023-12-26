@@ -90,14 +90,16 @@ export default {
     },
   },
   mounted: function () {
-    var _this = this;
-    getRequest("/user/currentUserName").then(resp => {
-      console.log(resp);
-      _this.currentUserName = '游客';
+    getRequest("/user/currentUser").then(resp => {
+      // console.log(resp);
+      this.currentUserName = '游客';
       if(resp.status == '200'){
         var data = resp.data;
+        console.log(data);
         if(data.status == '200'){
-          _this.currentUserName = data.msg;
+          this.currentUserName = data.data.nickname;
+          console.log("current:"+this.currentUserName);
+          window.localStorage.setItem('id', data.data.id);
         }
       }
 

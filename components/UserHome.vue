@@ -14,7 +14,7 @@
     <div class="blogs">
       <ul class="list">
         <li v-for="item in articleList" :key="item.id" class="item">
-          <div class="content" @click="itemClick(item.id)">
+          <div class="content" @click="itemClick(item.id,item.uid)">
             <h4 class="title">{{ item.title }}</h4>
              <p class="description">{{ item.summary }}</p>
             <div class="meta">
@@ -112,14 +112,16 @@ export default {
     })
   },
   methods: {
+
     // 搜索
     searchClick() {
       this.loadBlogs(1, this.pageSize);
     },
+
     // 文章详细
-    itemClick(id) {
+    itemClick(aid,uid) {
       // this.$router.push({ path: '/blogDetail', query: { aid: id } })
-      this.$router.push({ path: '/blogPage', query: { aid: id } })
+      this.$router.push({ path: '/blogPage', query: { aid: aid , uid: uid } })
 
     },
     // 收藏操作

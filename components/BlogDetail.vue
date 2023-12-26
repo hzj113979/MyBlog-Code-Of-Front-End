@@ -40,6 +40,7 @@
 import {getRequest} from '../utils/api'
 
 export default {
+  name: 'BlogDetail',
   data() {
     return {
       article: {},
@@ -58,8 +59,8 @@ export default {
     this.loading = true;
     getRequest("/article/getArticleById/" + aid).then(resp => {
       if (resp.status === 200) {
-        console.log(resp)
         this.article = resp.data;
+        this.$emit('getNickname', this.article.nickname);
       }
       this.loading = false;
     }, resp => {

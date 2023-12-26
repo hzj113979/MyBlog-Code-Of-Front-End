@@ -76,7 +76,6 @@ export default {
       getRequest("/article/EditArticleById/" + id).then(resp => {
         _this.loading = false;
         if (resp.status == 200) {
-          console.log(resp.data)
           _this.article = resp.data.data;
           var tags = _this.article.tags;
           _this.article.dynamicTags = []

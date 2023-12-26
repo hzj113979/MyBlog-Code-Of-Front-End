@@ -2,7 +2,8 @@ import { createStore } from 'vuex'
 import Vue from 'vue'
 import Vuex from 'vuex'
 Vue.use(Vuex)
-const store = createStore({
+// const store = createStore({
+const store = new Vuex.Store({
   state: {
     count: 1,
     histroy: [],
@@ -20,8 +21,6 @@ const store = createStore({
     SET_FAVOURITE: (state, favourite) => {
       state.favourite.unshift(favourite)
     }
-
-
   },
   actions: {
     setHistroy({ commit }, histroy) {
@@ -29,14 +28,11 @@ const store = createStore({
         commit('SET_HISTROY', histroy)
       })
     },
-
     setFavourite({ commit }, favourite) {
       return new Promise(resolve => {
         commit('SET_FAVOURITE', favourite)
       })
     }
-
-
   }
 })
 

@@ -1,6 +1,7 @@
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import Vue from 'vue'
+import Vuex from 'vuex'
 import App from './App'
 import router from './router'
 import axios from 'axios'
@@ -10,6 +11,7 @@ import './utils/filter_utils.js'
 import './assets/md/code.js';
 
 Vue.use(ElementUI)
+Vue.use(Vuex)
 Vue.prototype.$http = axios
 Vue.config.productionTip = false
 window.bus = new Vue();
