@@ -16,10 +16,10 @@ export default new Router({
       hidden: true
     },
     {
-      path: '/loginblank',
-      name: 'loginblank',
+      path: '/scroll',
+      name: 'scroll',
       hidden: true,
-      component: (resolve) => require(['@/assets/Blank/LoginBlank'], resolve)
+      component: (resolve) => require(['@/components/Scroll'], resolve)
     },
     {
       path: '/register',
@@ -28,10 +28,10 @@ export default new Router({
       component: (resolve) => require(['@/components/Register'], resolve)
     },
     {
-      path: '/md',
-      name: 'md',
+      path: '/comment',
+      name: 'comment',
       hidden: true,
-      component: (resolve) => require(['@/components/MarkDown'], resolve),
+      component: (resolve) => require(['@/components/Comment'], resolve)
     },
     {
       path: '/home',
@@ -115,7 +115,8 @@ export default new Router({
           meta: {
             keepAlive: false
           }
-        }, {
+        },
+        {
           path: '/editBlog',
           name: '编辑博客',
           component: (resolve) => require(['@/components/PostArticle'], resolve),

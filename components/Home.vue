@@ -1,26 +1,52 @@
 <template>
   <el-container class="home_container">
-    <el-header>
-      <div style="width: 300px;">一个主打技术分享的博客</div>
-      <div class="home_userinfoContainer">
-        <el-dropdown @command="handleCommand">
+    <el-header >
+      <div style="width: 320px;font-family: '华文行楷'">一个主打技术分享的博客网站</div>
+      <el-menu default-active="0"
+               mode="horizontal"
+               class="el-menu-demo"
+               text-color="black"
+               router>
+        <template v-for="(item, index) in this.$router.options.routes" v-if="!item.hidden && item.isuser">
+          <el-submenu :index="index + ''" v-if="item.children.length > 1" :key="index">
+            <template slot="title">
+              <i :class="item.iconCls"></i>
+              <span>{{ item.name }}</span>
+            </template>
+            <el-menu-item v-for="child in item.children"
+                          v-if="!child.hidden"
+                          :index="child.path"
+                          :key="child.path">
+              {{ child.name }}
+            </el-menu-item>
+          </el-submenu>
+          <template v-else>
+            <el-menu-item :index="item.children[0].path">
+              <i :class="item.children[0].iconCls"></i>
+              <span slot="title">{{ item.children[0].name }}</span>
+            </el-menu-item>
+          </template>
+        </template>
+        <div class="home_userinfoContainer">
+          <el-dropdown @command="handleCommand">
           <span class="el-dropdown-link home_userinfo">
             {{ currentUserName }}<i class="el-icon-arrow-down el-icon--right home_userinfo"></i>
           </span>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item command="sysMsg">系统消息</el-dropdown-item>
-            <el-dropdown-item command="MyArticle">我的文章</el-dropdown-item>
-            <el-dropdown-item command="MyHome">个人主页</el-dropdown-item>
-            <el-dropdown-item command="logout" divided>退出登录</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
-      </div>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item command="sysMsg">系统消息</el-dropdown-item>
+              <el-dropdown-item command="MyArticle">我的文章</el-dropdown-item>
+              <el-dropdown-item command="MyHome">个人主页</el-dropdown-item>
+              <el-dropdown-item command="logout" divided>退出登录</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </div>
+      </el-menu>
     </el-header>
     <el-container >
-      <el-aside width="200px"  style="background-image: linear-gradient(to bottom right, #f9a7a7, #66b1ff)">
-        <SideBar />
-      </el-aside>
-      <el-container>
+<!--      <el-aside width="200px"  style="background-image: linear-gradient(to bottom right, #f9a7a7, #66b1ff)">-->
+      <!--      <SideBar />-->
+<!--      </el-aside>-->
+<!--      <el-container>-->
         <el-main >
           <div class="box_main">
             <keep-alive>
@@ -30,7 +56,7 @@
           <router-view v-if="!this.$route.meta.keepAlive"></router-view>
         </el-main>
       </el-container>
-    </el-container>
+<!--    </el-container>-->
   </el-container>
 </template>
 <script>
@@ -118,66 +144,61 @@ export default {
 }
 
 .el-header {
-  background-image: linear-gradient(to bottom right, #f9a7a7, #66b1ff);
-  background-color: white;
-  color: #333;
+  /*background-image: linear-gradient(to bottom right, #f9a7a7, #66b1ff);*/
+  /*background-color: black;*/
+  color: black;
   text-align: center;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 20px;
-  height: 48px;
-  line-height: 48px;
+  height: 40px;
+  line-height: 40px;
 }
-/*.el-header{*/
-/*  text-align: center;*/
-/*  background-image: linear-gradient(to bottom right, #f9a7a7, #66b1ff);*/
-/*  background-color: #e6e6e6;*/
-/*  padding: 25px;*/
-/*  !*left: 0px;*!*/
-/*  !*right: 0px;*!*/
-/*  !*width: 100%;*!*/
-/*  font-family: '华文行楷';*/
-/*  font-size: 1.5em;*/
-/*  margin-top: 0;*/
 
+
+/*.el-aside {*/
+/*  background-color: #ECECEC;*/
+/*  font-size: 16px;*/
+/*  line-height: 40px;*/
+/*  padding-top: 30px;*/
 /*}*/
 
-
-.el-aside {
-  background-color: #ECECEC;
-  font-size: 16px;
-  line-height: 40px;
-  padding-top: 30px;
+.el-menu{
+  background-color: rgba(0, 0, 0, 0);
 }
 
 .el-main {
-  background-image: linear-gradient(to bottom right, #f9a7a7, #66b1ff);
-  background-color: #f5f6f7;
+  /*background-image: linear-gradient(to bottom right, #f9a7a7, #66b1ff);*/
+  background-color: #ffffff;
   color: #000;
   text-align: center;
 }
 
 .home_title {
-  color: #fff;
-  font-size: 22px;
+  color: #ffffff;
+  font-size: 20px;
   display: inline;
 }
 
 .home_userinfo {
-  color: #000;
+  color: #ffffff;
   cursor: pointer;
 }
 
 .home_userinfoContainer {
   display: inline;
+  /*padding-top: 10px;*/
+  margin-left: 10px;
   margin-right: 20px;
 }
 
 .home_userinfoContaine .el-dropdown span {
   color: #000;
 }
-
+.el-dropdown{
+  margin: 9px 0 0 0;
+}
 .main_container {
   margin-top: 10px;
   margin-right: 54px;
@@ -185,6 +206,9 @@ export default {
   position: relative;
   background-color: white;
   border-radius: 2px;
+}
+el-menu-item{
+  width: 50px;
 }
 
 .box_main {

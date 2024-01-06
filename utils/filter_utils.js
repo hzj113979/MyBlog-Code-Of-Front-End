@@ -25,6 +25,7 @@ Vue.filter("formatDateTime", function formatDateTime(value) {
   if (day < 10) {
     day = "0" + day;
   }
-  return year + "-" + month + "-" + day + " " + hours + ":" + minutes;
+  // return year + "-" + month + "-" + day + " " + hours + ":" + minutes;
+  return year + "年" + month + "月" + day + "日 " + hours + ":" + minutes;
 });
 

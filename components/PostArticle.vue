@@ -38,7 +38,7 @@
   </el-container>
 </template>
 <script>
-import { postRequest } from '../utils/api'
+import {postRequest, postRequest_json} from '../utils/api'
 import { getRequest } from '../utils/api'
 import { uploadFileRequest } from '../utils/api'
 import { isNotNullORBlank } from '../utils/utils'
@@ -56,7 +56,7 @@ export default {
       loading: false,
       from: '',
       article: {
-        id: '-1',
+        id: -1,
         dynamicTags: [],
         title: '',
         mdContent: '',
@@ -106,7 +106,7 @@ export default {
       _this.loading = true;
       console.log(_this.article.dynamicTags)
       // const html = xss.process(VueMarkdownEditor.themeConfig.markdownParser.render(_this.article.mdContent));
-      postRequest("/article/addNewArticle", {
+      postRequest_json("/article/addNewArticle", {
         id: _this.article.id,
         title: _this.article.title,
         mdContent: _this.article.mdContent,
@@ -118,7 +118,7 @@ export default {
       }).then(resp => {
         _this.loading = false;
         if (resp.status == 200 && resp.data.status == '200') {
-          _this.article.id = resp.data.msg;
+          // _this.article.id = resp.data.msg;
           _this.$message({ type: 'success', message: state == 0 ? '保存成功!' : '发布成功!' });
           //            if (_this.from != undefined) {
           window.bus.$emit('blogTableReload')

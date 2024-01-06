@@ -4,7 +4,7 @@
       <div class="left">
         <div class="card">
           <img src="../assets/MyBlog-logo.png" alt="">
-          <h3 href="">{{ nickname }}</h3>
+          <h3>{{ nickname }}</h3>
           <el-button :loading="this.isLoading" @click="changeFansStatus" round>{{
               isFans ? '已关注' : '关注'
             }}
@@ -25,7 +25,9 @@
             <li v-for="item in archives" :key="item.id" class="item">
               <div class="link" @click="itemClick(item.id, uid)">
                 <div class="title">{{ item.title }}
-                  (<div class="el-icon-view">{{ item.pageView }}</div>)
+                  (
+                  <div class="el-icon-view">{{ item.pageView }}</div>
+                  )
                 </div>
               </div>
             </li>
@@ -35,7 +37,118 @@
       <div class="right">
         <div class="blog_content">
           <blog_detail @getNickname="getNickname"/>
+          <hr>
+          <span style="padding: 0px 140px 0px 30px">
+            <span>{{ nickname }}</span>
+            <el-button style="width: 90px; margin: 0px 50px 0px 25px" :loading="this.isLoading"
+                       @click="changeFansStatus" round>{{
+                isFans ? '已关注' : '关注'
+              }}
+            </el-button>
+          </span>
+          <div class="star_on_off">
+            <span class="el-icon-sunny">点个攒</span>
+            <span class="el-icon-heavy-rain">踩一脚</span>
+            <span class="el-icon-share">分享</span>
+            <span class="el-icon-star-off" @click="addCollect">收藏</span>
+            <span class="el-icon-s-comment" @click="drawer = true;getComments()">评论</span>
+            <span> | </span>
+            <span class="el-icon-warning">举报</span>
+          </div>
+          <el-drawer
+            size:="450px"
+            title="请友善交流..."
+            :visible.sync="drawer"
+            :with-header="false">
+            <div style="margin-top: 10px;padding:0px 10px 0 10px ;color: #66b1ff;width: 415px; text-align: center">
+              请友善交流...
+              <hr>
+            </div>
+            <el-skeleton animated :loading="comments_isLoading">
+              <template #template>
+                <div style="padding: 14px;">
+                  <el-skeleton-item variant="h3" style="width: 50%;"/>
+                  <div
+                    style="display: flex; align-items: center; justify-items: space-between; margin-top: 16px; height: 16px;">
+                    <el-skeleton-item variant="text" style="margin-right: 16px;"/>
+                    <el-skeleton-item variant="text" style="width: 30%;"/>
+                  </div>
+                  <div
+                    style="display: flex; align-items: center; justify-items: space-between; margin-top: 16px; height: 16px;">
+                    <el-skeleton-item variant="text" style="margin-right: 16px;"/>
+                    <el-skeleton-item variant="text" style="width: 30%;"/>
+                  </div>
+                  <div
+                    style="display: flex; align-items: center; justify-items: space-between; margin-top: 16px; height: 16px;">
+                    <el-skeleton-item variant="text" style="margin-right: 16px;"/>
+                    <el-skeleton-item variant="text" style="width: 30%;"/>
+                  </div>
+                  <div
+                    style="display: flex; align-items: center; justify-items: space-between; margin-top: 16px; height: 16px;">
+                    <el-skeleton-item variant="text" style="margin-right: 16px;"/>
+                    <el-skeleton-item variant="text" style="width: 30%;"/>
+                  </div>
+                </div>
+              </template>
+              <template>
+                <div>
+                  <el-form style="
+                          width: 80%;
+                          position: relative;
+                          background: rgba(245,246,247,0.8);
+                          border-radius: 8px;
+                          margin-left: 25px;
+                          padding: 14px 20px 0px 20px;">
+                    <el-form-item>
+                      <el-input
+                        placeholder="恶语伤人六月寒"
+                        type="textarea"
+                        resize="none"
+                        v-model="textarea"
+                        maxlength="1000"
+                        show-word-limit
+                        suffix-icon="el-icon-edit"
+                        rows="4"
+                      >
+                      </el-input>
+                    </el-form-item>
+                    <el-form-item>
+                      <el-button type="primary"
+                                 icon="el-icon-s-promotion"
+                                 size="mini"
+                                 style="margin: 0px 5px 0 250px;" @click="addComment(textarea)">
+                        评论
+                      </el-button>
+                    </el-form-item>
+                  </el-form>
+                </div>
+                <div style="margin: 0px 0px 10px 25px ">
+                  <comment_reply class="item"
+                                 ref="commentReplyRef"
+                                 @closeOtherCommentBoxExcept="closeOtherCommentBoxExcept"
+                                 v-for="(item,idx) in comments"
+                                 :index="idx"
+                                 :comment="item"
+                                 :aid="aid"
+                                 :uid="uid"
+                                 :key=idx
+                  />
+                </div>
+                <el-pagination
+                  small
+                  :page-size="pageSize"
+                  layout="prev, pager, next"
+                  :total="total"
+                  :hide-on-single-page="(total/pageSize) <= 1"
+                  @current-change="currentPage"
+                  style="padding-left: 0px; width: 100px"
+                >
+                </el-pagination>
+              </template>
+            </el-skeleton>
+          </el-drawer>
         </div>
+        <!--     推荐文章-->
         <div class="right" style="background-color: rgba(255,255,255,0.5); margin-top: 10px;border-radius: 10px;">
           <div class="blogs" style="margin-top: 20px;">
             <ul class="list">
@@ -53,28 +166,24 @@
             </ul>
           </div>
         </div>
-
       </div>
     </div>
-    <div style="padding: 20px 20px"></div>
-    <div class="container">
-      <div class="left">
-      </div>
 
-    </div>
   </div>
 </template>
 
 <script>
 import BlogDetail from "./BlogDetail.vue";
+import CommentReply from "./Comment.vue";
 import {getRequest, postRequest} from "../utils/api";
-import {provide} from "vue";
+import {provide, ref} from "vue";
 import {get} from "../utils/request";
 
 export default {
   name: "BlogPage",
   components: {
     "blog_detail": BlogDetail,
+    "comment_reply": CommentReply,
   },
   data() {
     return {
@@ -100,7 +209,16 @@ export default {
       pageSize: 6, // 每页显示条目 默认设置5
       keywords: '',//关键词
       loading: false,
-      totalCount: -1,
+      comments_isLoading: false,
+
+      total: -1, // 一级评论总数
+      // 评论抽屉
+      drawer: false,
+      // 评论集合
+      comments: [],
+      // 头像
+      circleUrl: '../assets/MyBlog-logo.png',
+      textarea: ''
     }
   },
   // 传递值给子组件
@@ -122,6 +240,7 @@ export default {
   },
 
   methods: {
+    ref,
     loadBlogs(page) {
       var _this = this;
       var url = '';
@@ -148,7 +267,7 @@ export default {
       })
     },
     // 文章点击事件
-    itemClick(aid,uid) {
+    itemClick(aid, uid) {
       this.$router.push({path: '/blogPage', query: {aid: aid, uid: uid}})
       window.location.reload();
     },
@@ -156,7 +275,6 @@ export default {
     getNickname(nickname) {
       this.nickname = nickname;
     },
-
     // 根据用户ID获取粉丝数量
     getCountOfFansByUid() {
       // 构建请求URL
@@ -248,7 +366,71 @@ export default {
           this.$message({type: 'error', message: reason.response.msg});
         }
       })
-    }
+    },
+    addCollect() {
+      var _this = this;
+      this.loading = true;
+      var url = '/collection/addCollection'
+      postRequest(url, {aid: this.aid}).then(resp => {
+        if (resp.status == 200) {
+          _this.$message({type: 'success', message: '收藏成功!'});
+        }
+        _this.loading = false;
+      }, resp => {
+        _this.loading = false;
+        _this.$message({type: 'error', message: '收藏失败!'});
+      });
+    },
+    getComments() {
+      var _this = this;
+      var url = "/comment/getComment?aid=" + _this.aid + "&currentPage=" + _this.currentPage + "&pageSize=" + _this.pageSize;
+      _this.comments_isLoading = true;
+      getRequest(url).then(resp => {
+        if (resp.status == 200) {
+          _this.comments = resp.data.data;
+          // setTimeout(() => (this.comments_isLoading = false), 2000)
+          this.comments_isLoading = false
+        }
+      }, resp => {
+        _this.$message({type: 'error', message: '数据加载失败!'});
+      })
+    },
+    errorHandler() {
+      return true
+    },
+    currentChange(currentPage) {
+      this.currentPage = currentPage;
+      this.getComments();
+    },
+    addComment(textarea) {
+      var url = "/comment/add";
+      postRequest(url, {
+        aid: this.aid,
+        content: textarea,
+        uid: this.uid,
+      }).then(resp => {
+        if (resp.status == 200) {
+          this.$message({type: 'success', message: '评论成功!'});
+          this.textarea_reply = '';
+          this.getComments();
+        }
+      }, resp => {
+        this.$message({type: 'error', message: '评论失败!'});
+      })
+    },
+    closeOtherCommentBoxExcept(index) {
+      // console.log("index"+index)
+      /* 根据索引, 关闭其它的输入框, 除了指定的输入框外 */
+      this.$refs['commentReplyRef'].forEach((commentReplyRef, idx) => {
+        if (index != idx) {
+          commentReplyRef.hideCommentBox()
+        }
+      })
+    },
+    reloadComments() {
+      this.currentPage = 1;
+      this.getComments();
+    },
   }
 }
 </script>
@@ -261,6 +443,7 @@ export default {
   display: flex;
   margin: 0 auto;
   justify-content: space-between;
+
 }
 
 .container .el-button {
@@ -270,7 +453,6 @@ export default {
 .container .left {
   width: 200px;
   height: 100%;
-  /*background-color: #3a8ee6*/
 }
 
 .container .right {
@@ -418,5 +600,49 @@ export default {
 .Article li:hover .title {
   color: #42b983;
 }
+
+.star_on_off {
+  cursor: pointer;
+  display: inline-block;
+  font-size: 16px;
+  color: #666;
+  /*float: right;*/
+}
+
+.star_on_off span {
+  padding-right: 10px;
+  float: left;
+  z-index: 9999;
+  /*padding-top: 0px;*/
+}
+
+.el-drawer {
+  /*左对齐*/
+  text-align: left;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.comment_ul {
+  /*list-style: none;*/
+  padding-left: 20px;
+}
+
+.comment_li {
+  /*去除起前面的点*/
+  list-style-type: none;
+  /*内部间距*/
+  padding: 10px 0 10px;
+  /*每篇下面的实线*/
+  border-bottom: 2px solid #f0f0f0;
+  /*标题，鼠标，悬浮，变绿色*/
+}
+
+.item {
+  margin-top: 10px;
+  /*内部间距*/
+
+}
+
 
 </style>

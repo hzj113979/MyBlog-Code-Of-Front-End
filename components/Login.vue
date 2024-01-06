@@ -37,7 +37,10 @@
                 </router-link>
               </div>
               <div class="butt">
-                  <el-button type="primary" @click.native.prevent="submitClick" style="margin-right: 78px">登录</el-button>
+                  <el-button type="primary"
+                             @click.native.prevent="submitClick"
+                             @keyup.enter="submitClick"
+                             style="margin-right: 78px">登录</el-button>
               </div>
             </el-card>
           </div>
@@ -113,6 +116,10 @@ export default {
         _this.$alert('找不到服务器', '失败!');
       });
     },
+    handleEnter() {
+      // 进行相应的操作
+      console.log('Enter key pressed');
+    }
   }
 }
 </script>
@@ -136,7 +143,7 @@ export default {
   margin-bottom: 20px;
   line-height: 50px;
   text-align: center;
-  font-size: 10px;
+  font-size: 20px;
 }
 
 .logindata {

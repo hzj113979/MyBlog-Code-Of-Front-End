@@ -23,7 +23,7 @@
     </div>
     <!-- 用户菜单 -->
     <div v-else>
-      <el-menu default-active="0" class="el-menu-vertical-demo" style="background-image: linear-gradient(to bottom right, #f9a7a7, #66b1ff)" router>
+        <el-menu default-active="0" mode="horizontal" class="el-menu-demo" router>
         <template v-for="(item, index) in this.$router.options.routes" v-if="!item.hidden && item.isuser">
           <el-submenu :index="index + ''" v-if="item.children.length > 1" :key="index">
             <template slot="title">
@@ -47,6 +47,8 @@
 <style>
   .el-menu{
     background-color: rgba(0, 0, 0, 0);
+
+    /*background-image: linear-gradient(to bottom right, #f9a7a7, #66b1ff)*/
   }
 
 </style>

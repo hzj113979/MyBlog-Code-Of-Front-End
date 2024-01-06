@@ -91,7 +91,7 @@ export default {
   background-image: linear-gradient(to bottom right, #f9a7a7, #66b1ff);
   display: flex;
   flex-direction: column;
-  padding-left: 0px;
+  padding-left:50px;
   background-color: #fff;
   padding-top: 0px;
   margin-top: 8px;

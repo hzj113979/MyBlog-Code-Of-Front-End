@@ -34,6 +34,23 @@ export const postRequest = (url, params) => {
     }
   });
 }
+export const postRequest_json = (url, params) => {
+  return axios({
+    method: 'post',
+    url: `${base}${url}`,
+    data: params,
+    // transformRequest: [function (data) {
+    //   return Object.entries(data)
+    //     .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+    //     .join('&');
+    // }],
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + localStorage.getItem('token'),
+      'token': localStorage.getItem('token')
+    }
+  });
+}
 export const uploadFileRequest = (url, params) => {
   return axios({
     method: 'post',

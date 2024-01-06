@@ -30,7 +30,7 @@
       <el-col>
 <!--        <div style="text-align: left" v-html="article.htmlContent">-->
 <!--        </div>-->
-        <v-md-preview :text="article.mdContent"></v-md-preview>
+        <v-md-preview style="text-align: left" :text="article.htmlContent"></v-md-preview>
 <!--        <v-md-editor :value="article.mdContent" mode="preview"></v-md-editor>-->
       </el-col>
     </el-row>-
@@ -77,6 +77,20 @@ export default {
 .body{
   /*background-image: linear-gradient(to bottom right, #f9a7a7, #66b1ff);*/
   height: 100%;
+  overflow: hidden;
+}
+/* 浏览器滚动条样式 */
+::-webkit-scrollbar {
+  width: 4px;
+  background: transparent;
 }
 
+::-webkit-scrollbar-thumb {
+  background: rgb(174, 174, 174);
+  border-radius: 50px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
 </style>
