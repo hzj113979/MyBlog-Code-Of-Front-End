@@ -38,12 +38,7 @@ export const postRequest_json = (url, params) => {
   return axios({
     method: 'post',
     url: `${base}${url}`,
-    data: params,
-    // transformRequest: [function (data) {
-    //   return Object.entries(data)
-    //     .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
-    //     .join('&');
-    // }],
+    data: JSON.stringify(params),
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + localStorage.getItem('token'),
