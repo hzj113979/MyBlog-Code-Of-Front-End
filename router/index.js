@@ -16,12 +16,6 @@ export default new Router({
       hidden: true
     },
     {
-      path: '/scroll',
-      name: 'scroll',
-      hidden: true,
-      component: (resolve) => require(['@/components/Scroll'], resolve)
-    },
-    {
       path: '/register',
       name: 'register',
       hidden: true,
