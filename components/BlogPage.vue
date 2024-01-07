@@ -38,7 +38,7 @@
         <div class="blog_content">
           <blog_detail @getNickname="getNickname"/>
           <hr>
-          <span style="padding: 0px 140px 0px 30px">
+          <span style="padding: 0px 200px 0px 30px">
             <span>{{ nickname }}</span>
             <el-button style="width: 90px; margin: 0px 50px 0px 25px" :loading="this.isLoading"
                        @click="changeFansStatus" round>{{
@@ -47,13 +47,19 @@
             </el-button>
           </span>
           <div class="star_on_off">
-            <span class="el-icon-sunny">点个攒</span>
-            <span class="el-icon-heavy-rain">踩一脚</span>
-            <span class="el-icon-share">分享</span>
-            <span class="el-icon-star-off" @click="addCollect">收藏</span>
-            <span class="el-icon-s-comment" @click="drawer = true;getComments()">评论</span>
-            <span> | </span>
-            <span class="el-icon-warning">举报</span>
+            <el-tooltip class="item" effect="dark" content="点个赞" placement="bottom">
+              <span class="el-icon-sunny"></span>
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="踩一脚" placement="bottom">
+              <span class="el-icon-heavy-rain"></span>
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="分享" placement="bottom">
+              <span class="el-icon-share"></span>
+            </el-tooltip>
+            <span class="el-icon-star-off item" @click="addCollect">收藏</span>
+            <span class="el-icon-s-comment item" @click="drawer = true; getComments()">评论</span>
+            <span class="item"> | </span>
+            <span class="el-icon-warning item">举报</span>
           </div>
           <el-drawer
             size:="450px"
@@ -116,7 +122,7 @@
                       <el-button type="primary"
                                  icon="el-icon-s-promotion"
                                  size="mini"
-                                 style="margin: 0px 5px 0 250px;" @click="addComment(textarea)">
+                                 style="margin: 0px 5px 0 250px;" @click="addComment()">
                         评论
                       </el-button>
                     </el-form-item>
@@ -126,6 +132,7 @@
                   <comment_reply class="item"
                                  ref="commentReplyRef"
                                  @closeOtherCommentBoxExcept="closeOtherCommentBoxExcept"
+                                 @reloadComments="reloadComments"
                                  v-for="(item,idx) in comments"
                                  :index="idx"
                                  :comment="item"
@@ -175,9 +182,10 @@
 <script>
 import BlogDetail from "./BlogDetail.vue";
 import CommentReply from "./Comment.vue";
-import {getRequest, postRequest} from "../utils/api";
+import {getRequest, postRequest, postRequest_json} from "../utils/api";
 import {provide, ref} from "vue";
-import {get} from "../utils/request";
+
+
 
 export default {
   name: "BlogPage",
@@ -249,7 +257,6 @@ export default {
         _this.loading = false;
         if (resp.status == 200) {
           _this.articleList = resp.data.articles;
-          console.log(resp.data.articles);
           _this.totalCount = resp.data.totalCount;
         } else {
           _this.$message({type: 'error', message: '数据加载失败!'});
@@ -279,7 +286,6 @@ export default {
     getCountOfFansByUid() {
       // 构建请求URL
       var url = "/fans/getCountOfFans?uid=" + this.uid;
-      console.log("uid" + this.uid);
       // 发送请求，获取响应
       getRequest(url).then(response => {
         // 如果响应状态码为200
@@ -339,7 +345,6 @@ export default {
         fid: window.localStorage.getItem('id'),
       }).then(response => {
         this.isLoading = true;
-        console.log(response);
         if (response.status == 200) {
           this.isFans = !this.isFans;
           this.getCountOfFansByUid();
@@ -357,7 +362,6 @@ export default {
     getArchivesByUid() {
       var url = "/article/getArchives?uid=" + this.uid;
       getRequest(url,).then(response => {
-        console.log(response);
         if (response.status == 200) {
           this.archives = response.data.data;
         }
@@ -367,6 +371,7 @@ export default {
         }
       })
     },
+    // 收藏
     addCollect() {
       var _this = this;
       this.loading = true;
@@ -381,6 +386,7 @@ export default {
         _this.$message({type: 'error', message: '收藏失败!'});
       });
     },
+    // 获取评论
     getComments() {
       var _this = this;
       var url = "/comment/getComment?aid=" + _this.aid + "&currentPage=" + _this.currentPage + "&pageSize=" + _this.pageSize;
@@ -388,7 +394,6 @@ export default {
       getRequest(url).then(resp => {
         if (resp.status == 200) {
           _this.comments = resp.data.data;
-          // setTimeout(() => (this.comments_isLoading = false), 2000)
           this.comments_isLoading = false
         }
       }, resp => {
@@ -402,16 +407,16 @@ export default {
       this.currentPage = currentPage;
       this.getComments();
     },
-    addComment(textarea) {
+    addComment() {
       var url = "/comment/add";
-      postRequest(url, {
+      postRequest_json(url, {
         aid: this.aid,
-        content: textarea,
+        content: this.textarea,
         uid: this.uid,
       }).then(resp => {
         if (resp.status == 200) {
           this.$message({type: 'success', message: '评论成功!'});
-          this.textarea_reply = '';
+          this.textarea = '';
           this.getComments();
         }
       }, resp => {

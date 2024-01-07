@@ -9,17 +9,23 @@
       <div style="padding-left: 10px">
         <div style="color: #66b1ff">{{
             comment.username
-          }}
+          }}<el-tag v-if="comment.uid==uid" size="mini" style="color: rgb(103,124,232)">作者</el-tag>
         </div>
-        <el-tag v-if="comment.uid==uid" size="mini">作者</el-tag>
+
         <div style="color: #8c939d; font-size: 10px"> {{ comment.createTime | formatDateTime }}</div>
         <div class="comment_content">{{ comment.content }}</div>
         <div class="comment_play">
-          <span class="el-icon-sunny" style="color: #8c939d"></span>
-          <span class="el-icon-heavy-rain" style="color: #8c939d"></span>
-          <span class="el-icon-share" style="color: #8c939d"></span>
+          <el-tooltip class="item" effect="dark" content="点个赞" placement="bottom">
+            <span class="el-icon-sunny" @click="praiseComment(comment)" style="color: #8c939d" v-model="comment.praise_count">{{ comment.praiseCount }}</span>
+          </el-tooltip>
+          <el-tooltip class="item" effect="dark" content="踩一脚" placement="bottom">
+            <span class="el-icon-heavy-rain"></span>
+          </el-tooltip>
+          <el-tooltip class="item" effect="dark" content="举报" placement="bottom">
+            <span class="el-icon-warning item"></span>
+          </el-tooltip>
           <span class="el-icon-chat-dot-round comment_reply_button"
-                @click="showCommentBox(comment.username)">
+                @click="showCommentBox(comment.username,comment.uid)">
                           </span>
         </div>
       </div>
@@ -32,10 +38,13 @@
         <div style="text-align: left; width: 320px;height: auto;padding-left: 20px;">
             <span>
               <span class="comment_reply_content">{{ reply.username }}</span>
-              <el-tag v-if="reply.uid == uid" size="mini" style="color: rgb(103,124,232)">作者</el-tag> : {{ reply.content }}
+              <el-tag v-if="reply.uid == uid" size="mini" style="color: rgb(103,124,232)">作者</el-tag> :
+              <span v-html="reply.altName"></span>
+              <!--              <span style='color: #66b1ff'>@xxx</span>-->
+              {{ reply.content }}
             </span>
           <span class="el-icon-chat-dot-round comment_reply_button"
-                @click="showCommentBox(reply.username)">
+                @click="showCommentBox(reply.username, reply.uid)">
                           </span>
         </div>
       </div>
@@ -44,7 +53,7 @@
     <div style="padding-left: 0px" v-show="commentBoxShow">
       <el-input
         ref="commentReplyRef"
-        placeholder="恶语伤人六月寒"
+        :placeholder="altName"
         type="textarea"
         resize="none"
         v-model="textarea_reply"
@@ -54,16 +63,19 @@
       >
       </el-input>
       <el-button type="primary"
-              icon="el-icon-s-promotion"
-              size="mini"
-              style="">评论</el-button>
+                 icon="el-icon-s-promotion"
+                 size="mini"
+                 style=""
+                 @click="replyComment(comment.id, comment.uid)"
+      >评论
+      </el-button>
     </div>
     <hr style="margin-top: 10px; background-color: #8c939d"/>
   </div>
 </template>
 
 <script>
-import {getRequest, postRequest} from "../utils/api";
+import {getRequest, postRequest, postRequest_json} from "../utils/api";
 
 export default {
   name: "comment",
@@ -78,8 +90,8 @@ export default {
     uid: {
       default: 0
     },
-    index:{ // 当前子组件的索引, 通过属性传过来, 主要用于在父组件中能从v-for循环到的组件中标识到唯一到当前组件
-      type:Number
+    index: { // 当前子组件的索引, 通过属性传过来, 主要用于在父组件中能从v-for循环到的组件中标识到唯一到当前组件
+      type: Number
     },
     currentPage: {
       default: 1
@@ -96,6 +108,8 @@ export default {
       comments_isLoading: true,
       textarea: '', // 一级评论
       textarea_reply: '',// 回复评论
+      altName: '恶语伤人六月寒',
+      replyUid: '',
       commentBoxShow: false
     }
   },
@@ -108,13 +122,16 @@ export default {
       this.currentPage = currentPage;
       this.getComments();
     },
-    showCommentBox(username) {
-      if(this.commentBoxShow){
-        this.commentBoxShow = false;
-        this.textarea_reply = '';
-      }else{
+    showCommentBox(username, replyUid) {
+      if (this.commentBoxShow) {
+        this.commentBoxShow = false
+        this.textarea_reply = ''
+        this.altName = ''
+        this.replyUid = '';
+      } else {
         this.commentBoxShow = true
-        this.textarea_reply = this.textarea_reply + ' @' + username + ' '
+        this.altName = ' @' + username + ' '
+        this.replyUid = replyUid
         this.$emit('closeOtherCommentBoxExcept', this.index)
       }
     },
@@ -122,18 +139,43 @@ export default {
       this.commentBoxShow = false
     },
     replyComment(commentId, replyUid) {
+      let _this = this;
+      let alt = "<span style='color: #66b1ff'>"+this.altName+"<span>"
+      console.log("=======")
+      console.log("replyUid="+this.replyUid)
       var url = "/comment/reply";
-      postRequest(url, {
+      postRequest_json(url, {
         commentId: commentId,
         content: this.textarea_reply,
         uid: this.uid,
-        replyUid: replyUid
+        replyUid: replyUid,
+        altName: alt,
       }).then(resp => {
         if (resp.status == 200) {
-          this.$message({type: 'success', message: '回复成功!'});
-          this.textarea_reply = '';
-          this.showCommentBox = false;
-          this.$emit('reloadComments')
+          _this.$message({type: 'success', message: '回复成功!'});
+          _this.textarea_reply = '';
+          _this.altName = '';
+          _this.commentBoxShow = false;
+          // this.reply.children.push(resp.data.data) // 将结果放入到reply.children中
+          _this.$emit('reloadComments')
+        }
+      },resp => {
+        _this.loading = false;
+        _this.$message({type: 'error', message: '回复失败!'});
+      })
+    },
+    praiseComment(comment){
+      // console.log(comment)
+      var _this = this;
+      postRequest("/comment/praise", {
+        id: comment.id,
+      }).then(resp => {
+        if (resp.data.status == 200) {
+          _this.$message({type:'success', message: resp.data.msg});
+          comment.praiseCount = comment.praiseCount + 1;
+        }else{
+            _this.loading = false;
+            _this.$message({type: 'error', message: resp.data.msg});
         }
       })
     }
