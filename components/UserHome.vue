@@ -65,7 +65,7 @@
 import {postRequest} from '../utils/api'
 import {getRequest} from '../utils/api'
 import BlogPage from "./BlogPage.vue";
-import Scroll from "./Scroll.vue";
+
 
 export default {
   data() {
